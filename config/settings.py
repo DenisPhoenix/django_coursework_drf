@@ -36,6 +36,7 @@ THIRD_PARTY_APPS = [
 # приложения проекта
 LOCAL_APPS = [
     "users.apps.UsersConfig",
+    "habit.apps.HabitConfig",
 ]
 
 # Все установленные приложения
