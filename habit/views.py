@@ -5,10 +5,14 @@ from habit.serializers import HabitSerializer, LocationSerializer
 
 
 class LocationViewSet(ModelViewSet):
+    """Вьюсет для локаций"""
+
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
 
 
 class HabitViewSet(ModelViewSet):
+    """Вьюсет для привычки"""
+
     queryset = Habit.objects.all()
     serializer_class = HabitSerializer

@@ -1,7 +1,10 @@
+from django.core.validators import MaxValueValidator
 from django.db import models
 
 
 class Location(models.Model):
+    """Модель локаций"""
+
     name = models.CharField(max_length=200, verbose_name="Название")
     address = models.CharField(max_length=500, blank=True, null=True, verbose_name="Адрес")
     description = models.TextField(blank=True, null=True, verbose_name="Описание")
@@ -16,6 +19,8 @@ class Location(models.Model):
 
 
 class Habit(models.Model):
+    """Модель привычки"""
+
     HABIT_PERIODICITY = [
         ("daily", "ежедневная"),
         ("two_days", "2 дня"),
@@ -30,15 +35,19 @@ class Habit(models.Model):
         "users.User", on_delete=models.CASCADE, null=True, blank=True, verbose_name="Пользователь"
     )
     location = models.ForeignKey(Location, on_delete=models.CASCADE, verbose_name="Место выполнения")
-    time = models.DateTimeField(verbose_name="Время выполнения")
+    time = models.TimeField(verbose_name="Время выполнения")
     action = models.CharField(max_length=150, verbose_name="Действие")
-    pleasant_habit = models.BooleanField(default=True, verbose_name="Признак приятной привычки")
-    linked_habit = models.CharField(max_length=150, null=True, blank=True, verbose_name="Связанная привычка")
+    pleasant_habit = models.BooleanField(default=False, verbose_name="Признак приятной привычки")
+    connection_habit = models.ForeignKey(
+        "self", on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Связанная привычка"
+    )
     periodicity = models.CharField(
         max_length=12, choices=HABIT_PERIODICITY, default="daily", verbose_name="Периодичность"
     )
     remuneration = models.CharField(max_length=250, null=True, blank=True, verbose_name="Вознаграждение")
-    completion_time = models.PositiveSmallIntegerField(max_length=120, verbose_name="Время на выполнение")
+    completion_time = models.PositiveSmallIntegerField(
+        validators=[MaxValueValidator(120)], verbose_name="Время на выполнение"
+    )
     publicity = models.BooleanField(default=False, verbose_name="Признак публичности")
 
     def __str__(self):
