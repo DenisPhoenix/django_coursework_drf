@@ -37,7 +37,7 @@ class HabitViewSet(viewsets.ModelViewSet):
 
         if self.action == "list":
             return PublishedHabitSerializer
-        if self.action in ("update", "partial_update", "create", "retrieve"):
+        elif self.action in ("update", "partial_update", "create", "retrieve"):
             return OwnerHabitSerializer
 
     def perform_create(self, serializer):
@@ -46,7 +46,10 @@ class HabitViewSet(viewsets.ModelViewSet):
 
 
 class PublishedHabit(ListAPIView):
+    """Вьюха для списка публичных привычек"""
+
     serializer_class = PublishedHabitSerializer
 
     def get_queryset(self):
+        """Выбор публичных привычек"""
         return Habit.objects.filter(publicity=True)

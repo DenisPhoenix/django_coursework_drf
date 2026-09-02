@@ -57,7 +57,7 @@ class PublishedHabitSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "action",
-            "related_habit",
+            "is_pleasant",
             "completion_time",
             "is_published",
         )
