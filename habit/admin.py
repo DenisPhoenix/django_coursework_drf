@@ -14,4 +14,4 @@ class LocationAdmin(admin.ModelAdmin):
 class HabitAdmin(admin.ModelAdmin):
     """Вывод привычек в админку"""
 
-    list_display = ("user", "location", "pleasant_habit", "completion_time", "publicity")
+    list_display = ("owner", "location", "is_pleasant", "completion_time", "is_published")
