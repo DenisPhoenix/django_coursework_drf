@@ -1,10 +1,10 @@
-from django.db.models import Q
 from rest_framework import permissions, viewsets
+from rest_framework.generics import ListAPIView
 
 from habit.models import Habit, Location
 from habit.pagination import HabitPaginator
 from habit.permissions import IsOwner
-from habit.serializers import LocationSerializer, NotOwnerHabitSerializer, OwnerAndPublishedHabitSerializer
+from habit.serializers import LocationSerializer, OwnerHabitSerializer, PublishedHabitSerializer
 
 
 class LocationViewSet(viewsets.ModelViewSet):
@@ -27,24 +27,26 @@ class HabitViewSet(viewsets.ModelViewSet):
         return super().get_permissions()
 
     def get_queryset(self):
-        """Получение публичных и текущего пользователя объектов"""
-        user = self.request.user
-
-        if not user.is_authenticated:
-            return Habit.objects.filter(publicity=True)
-
-        return Habit.objects.filter(Q(user=user) | Q(publicity=True))
+        """Получение объектов текущего пользователя"""
+        return Habit.objects.filter(owner=self.request.user)
 
     def get_serializer_class(self):
         """Метод для получения сериалайзера в зависимости от метода"""
         if getattr(self, "swagger_fake_view", False):
-            return NotOwnerHabitSerializer
+            return OwnerHabitSerializer
 
         if self.action == "list":
-            return NotOwnerHabitSerializer
+            return PublishedHabitSerializer
         if self.action in ("update", "partial_update", "create", "retrieve"):
-            return OwnerAndPublishedHabitSerializer
+            return OwnerHabitSerializer
 
     def perform_create(self, serializer):
         """Метод для установки владельца по умолчанию"""
-        serializer.save(user=self.request.user)
+        serializer.save(owner=self.request.user)
+
+
+class PublishedHabit(ListAPIView):
+    serializer_class = PublishedHabitSerializer
+
+    def get_queryset(self):
+        return Habit.objects.filter(publicity=True)
