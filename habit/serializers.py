@@ -11,10 +11,9 @@ class LocationSerializer(serializers.ModelSerializer):
         fields = ("id", "name", "address", "description", "created_at")
 
 
-class HabitSerializer(serializers.ModelSerializer):
+class OwnerAndPublishedHabitSerializer(serializers.ModelSerializer):
     """Сериалайзер модели привычки"""
 
-    periodicity = serializers.CharField(required=True)
     pleasant_habit = serializers.BooleanField(required=True)
     completion_time = serializers.IntegerField(required=True)
 
@@ -52,3 +51,20 @@ class HabitSerializer(serializers.ModelSerializer):
             )
 
         return data
+
+
+class NotOwnerHabitSerializer(serializers.ModelSerializer):
+    """Сериалайзер модели привычки"""
+
+    pleasant_habit = serializers.BooleanField(required=True)
+    completion_time = serializers.IntegerField(required=True)
+
+    class Meta:
+        model = Habit
+        fields = (
+            "id",
+            "action",
+            "pleasant_habit",
+            "completion_time",
+            "publicity",
+        )
