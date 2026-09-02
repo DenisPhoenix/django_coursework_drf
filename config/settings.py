@@ -161,8 +161,8 @@ CELERY_TASK_TIME_LIMIT = int(os.getenv("CELERY_TASK_TIME_LIMIT_MINUTES", default
 # настройки для Celery beat
 CELERY_BEAT_SCHEDULE = {
     "user-block": {
-        "task": "my_app.tasks.my_func",
-        "schedule": timedelta(days=1),
+        "task": "habit.tasks.reminder_about_habit",
+        "schedule": timedelta(minutes=1),
     },
 }
 
@@ -175,3 +175,7 @@ EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", default="False") == "True"
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# настройки TG API
+TELEGRAM_URL = os.getenv("TELEGRAM_URL")
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")

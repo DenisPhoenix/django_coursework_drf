@@ -7,7 +7,7 @@
 
 ## Установка:
 
-1. Установить основных зависимостей: "django", "celery", "redis", "psycopg2", "eventlet", "
+1. Установить основных зависимостей: "django", "celery", "redis", "psycopg2", "requests", "eventlet", "
    djangorestframework", "python-dotenv", "pillow", "djangorestframework-simplejwt",
    "drf-spectacular", "django-celery-beat"
 
