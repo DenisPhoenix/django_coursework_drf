@@ -32,6 +32,7 @@ THIRD_PARTY_APPS = [
     "rest_framework_simplejwt",
     "drf_spectacular",
     "django_celery_beat",
+    "corsheaders",
 ]
 # приложения проекта
 LOCAL_APPS = [
@@ -51,6 +52,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 # главный urls.py
@@ -169,3 +171,28 @@ CELERY_BEAT_SCHEDULE = {
 # настройки TG API
 TELEGRAM_URL = os.getenv("TELEGRAM_URL")
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+
+# настройка CORS
+if DEBUG:
+    # Адреса при разработке
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:3000",  # React
+        "http://localhost:5173",  # Vite / Vue
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:5173",
+    ]
+
+    CSRF_TRUSTED_ORIGINS = [
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:8000",  # Django
+    ]
+else:
+    # Адреса для продакшена
+    CORS_ALLOWED_ORIGINS = [
+        "https://example.com",
+        "https://example.com",
+    ]
+    CSRF_TRUSTED_ORIGINS = [
+        "https://example.com",
+    ]
