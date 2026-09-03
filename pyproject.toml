@@ -3,7 +3,7 @@ name = "django-coursework-drf"
 version = "0.1.0"
 description = ""
 authors = [
-    {name = "name",email = "email@gmail.com"}
+    { name = "name", email = "email@gmail.com" }
 ]
 readme = "README.md"
 requires-python = "^3.14"
@@ -69,3 +69,15 @@ plugins = [
 django_settings_module = "config.settings"
 strict_model_abstract_attrs = false
 strict_settings_type = false
+
+[tool.coverage.run]
+source = ["."]
+omit = [
+    "*/migrations/*",
+    "*/settings.py",
+    "*/wsgi.py",
+    "*/asgi.py",
+    "manage.py",
+    "*/tests/*",
+]
+

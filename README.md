@@ -47,6 +47,17 @@ plugins = [
 django_settings_module = "config.settings"
 strict_model_abstract_attrs = false
 strict_settings_type = false
+
+[tool.coverage.run]
+source = ["."]               # Директории для анализа (корень проекта)
+omit = [
+    "*/migrations/*",        # Игнорировать миграции Django
+    "*/settings.py",         # Игнорировать файл настроек
+    "*/wsgi.py",
+    "*/asgi.py",
+    "manage.py",
+    "*/tests/*",             # Сами тесты обычно исключают из отчета
+]
 ```
 
 ## Структура проекта

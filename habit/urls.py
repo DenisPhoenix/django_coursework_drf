@@ -10,6 +10,8 @@ router = SimpleRouter()
 router.register(r"locations", LocationViewSet, "location")
 router.register(r"habits", HabitViewSet, "habit")
 
-urlpatterns = [path("publish/", PublishedHabit.as_view(), name="publish-list")]
+urlpatterns = [
+    path("publish/", PublishedHabit.as_view(), name="publish-list"),
+]
 
 urlpatterns += router.urls
