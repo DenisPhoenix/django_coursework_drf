@@ -1,4 +1,5 @@
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -156,5 +157,128 @@ class HabitAPITestCase(APITestCase):
 
         # проверка статус кода
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # проверка созданных данных привычки
+        # проверка списка привычек
+        self.assertEqual(result_data, expected_data)
+
+
+class LocationAPITestCase(APITestCase):
+
+    def setUp(self):
+        self.user = User.objects.create(email="test@gmail.com")
+        self.location = Location.objects.create(
+            name="Тестовая локация 1",
+            address="Тестовый адрес локации 1",
+            description="Тестовый описание локации 1",
+        )
+        self.client.force_authenticate(user=self.user)
+
+    @staticmethod
+    def formater_iso(obj):
+        """Форматирует объект даты в строку ISO 8601"""
+        return timezone.localtime(obj).isoformat()
+
+    def test_location_create(self):
+        """Проверка создания локации"""
+        url = reverse("habit:location-list")
+        data = {
+            "name": "Тестовая локация 2",
+            "address": "Тестовый адрес локации 2",
+            "description": "Тестовый описание локации 2",
+        }
+
+        response = self.client.post(url, data)
+        result_data = response.json()
+        expected_data = {
+            "id": 2,
+            "name": data.get("name"),
+            "address": data.get("address"),
+            "description": data.get("description"),
+            "created_at": result_data.get("created_at"),
+        }
+
+        # проверка статус кода
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # проверка созданных данных локации
+        self.assertEqual(result_data, expected_data)
+        # проверка количества созданных локации
+        self.assertEqual(Location.objects.all().count(), 2)
+
+    def test_location_retrieve(self):
+        """Проверка детального просмотра локации"""
+        location = self.location
+        url = reverse("habit:location-detail", args=(location.pk,))
+
+        response = self.client.get(url)
+
+        result_data = response.json()
+        expected_data = {
+            "id": location.pk,
+            "name": location.name,
+            "address": location.address,
+            "description": location.description,
+            "created_at": self.formater_iso(location.created_at),
+        }
+
+        # проверка статус кода
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # проверка детального просмотра локации
+        self.assertEqual(result_data, expected_data)
+
+    def test_location_update(self):
+        """Проверка обновления локации"""
+        location = self.location
+        url = reverse("habit:location-detail", args=(location.pk,))
+        data = {
+            "name": "Тестовая локация 1.1",
+            "address": "Тестовый адрес локации 1.1",
+        }
+
+        response = self.client.patch(url, data)
+
+        result_data = response.json()
+        expected_data = {
+            "id": location.pk,
+            "name": data.get("name"),
+            "address": data.get("address"),
+            "description": location.description,
+            "created_at": self.formater_iso(location.created_at),
+        }
+
+        # проверка статус кода
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # проверка обновления названия локации
+        self.assertEqual(result_data, expected_data)
+
+    def test_location_delete(self):
+        """Проверка удаления локации"""
+        url = reverse("habit:location-detail", args=(self.location.pk,))
+
+        response = self.client.delete(url)
+
+        # проверка статус кода
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        # проверка удаления локации
+        self.assertEqual(Location.objects.all().count(), 0)
+
+    def test_location_list(self):
+        """Проверка вывода списка локаций"""
+        location = self.location
+        url = reverse("habit:location-list")
+
+        response = self.client.get(url)
+
+        result_data = response.json()
+        expected_data = [
+            {
+                "id": location.pk,
+                "name": location.name,
+                "address": location.address,
+                "description": location.description,
+                "created_at": self.formater_iso(location.created_at),
+            }
+        ]
+
+        # проверка статус кода
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # проверка списка локаций
         self.assertEqual(result_data, expected_data)

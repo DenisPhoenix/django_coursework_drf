@@ -7,6 +7,8 @@ from habit.validators import habit_is_pleasant, habit_is_pleasant_have_remunerat
 class LocationSerializer(serializers.ModelSerializer):
     """Сериалайзер модели локаций"""
 
+    created_at = serializers.DateTimeField(read_only=True)
+
     class Meta:
         model = Location
         fields = ("id", "name", "address", "description", "created_at")
