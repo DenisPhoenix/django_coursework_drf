@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from habit.models import Habit, Location
-from habit.validators import habit_is_connection_habit, habit_is_pleasant, habit_select_together_validator
+from habit.validators import habit_is_pleasant, habit_is_pleasant_have_remuneration, habit_select_together_validator
 
 
 class LocationSerializer(serializers.ModelSerializer):
@@ -35,13 +35,15 @@ class OwnerHabitSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """Общая валидация полей привычки"""
-        related_habit = data.get("related_habit")
-        reward = data.get("reward")
-        is_pleasant = data.get("is_pleasant")
+        request = self.context.get("request")
+        if request and request.method == "POST":
+            related_habit = data.get("related_habit")
+            reward = data.get("reward")
+            is_pleasant = data.get("is_pleasant")
 
-        habit_select_together_validator(related_habit, reward)
-        habit_is_connection_habit(related_habit, is_pleasant)
-        habit_is_pleasant(related_habit)
+            habit_select_together_validator(related_habit, reward)
+            habit_is_pleasant_have_remuneration(is_pleasant, related_habit, reward)
+            habit_is_pleasant(related_habit)
 
         return data
 

@@ -6,14 +6,15 @@ def habit_select_together_validator(related_habit, reward):
     if related_habit is not None and reward is not None:
         raise serializers.ValidationError("Нельзя одновременно заполнять вознаграждение и связанную привычку.")
 
-    if related_habit is None and reward is None:
-        raise serializers.ValidationError("Должно быть заполнено вознаграждение или связанную привычка.")
 
-
-def habit_is_connection_habit(related_habit, is_pleasant):
-    """Проверка является ли привычка полезной"""
-    if not is_pleasant and related_habit is not None:
-        raise serializers.ValidationError("Полезные привычки не могут быть связанными привычками")
+def habit_is_pleasant_have_remuneration(is_pleasant, related_habit, reward):
+    """Проверка есть ли у приятной привычки вознаграждение и связанная привычка"""
+    if (
+        is_pleasant
+        and (related_habit is not None and reward is not None)
+        or (related_habit is None and reward is None)
+    ):
+        raise serializers.ValidationError("У приятной привычки не может быть вознаграждения и связанной привычки.")
 
 
 def habit_is_pleasant(related_habit):

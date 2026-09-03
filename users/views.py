@@ -48,7 +48,6 @@ class UserViewSet(ModelViewSet):
         user = serializer.save(is_active=True)
         user.set_password(user.password)
         user.save()
-        return
 
     def perform_update(self, serializer):
         """Метод для обновления пользователя"""
