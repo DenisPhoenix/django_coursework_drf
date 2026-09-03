@@ -15,7 +15,7 @@ def reminder_about_habit():
     habits = Habit.objects.filter(time__isnull=False)
     for habit in habits:
         habit_datetime = datetime.combine(now, habit.time)
-        date_notification = habit_datetime - timedelta(minutes=10)
+        date_notification = habit_datetime.replace(second=0, microsecond=0) - timedelta(minutes=10)
 
         if now == date_notification:
             email = habit.owner.email
