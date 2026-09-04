@@ -9,7 +9,7 @@ from users.models import User
 
 
 @shared_task
-def reminder_about_habit():
+def reminder_about_habit() -> None:
     """Отправка напоминания в телеграм бот"""
     now = timezone.now().today().replace(second=0, microsecond=0)
     habits = Habit.objects.filter(time__isnull=False)
@@ -18,7 +18,7 @@ def reminder_about_habit():
         date_notification = habit_datetime.replace(second=0, microsecond=0) - timedelta(minutes=10)
 
         if now == date_notification:
-            email = habit.owner.email
+            email = habit.owner
             message = f"Ваша привычка {habit.action} начнется в {habit.time}. Не пропустите!"
             user = User.objects.get(email=email)
             if tg_chat_id := user.tg_chat_id:

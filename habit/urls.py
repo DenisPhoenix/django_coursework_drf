@@ -1,4 +1,6 @@
-from django.urls import path
+from typing import Union
+
+from django.urls import URLPattern, URLResolver, path
 from rest_framework.routers import SimpleRouter
 
 from habit.apps import HabitConfig
@@ -10,8 +12,8 @@ router = SimpleRouter()
 router.register(r"locations", LocationViewSet, "location")
 router.register(r"habits", HabitViewSet, "habit")
 
-urlpatterns = [
-    path("publish/", PublishedHabit.as_view(), name="publish-list"),
+urlpatterns: list[Union[URLPattern, URLResolver]] = [
+    path("publish_habits/", PublishedHabit.as_view(), name="publish-habit-list"),
 ]
 
 urlpatterns += router.urls

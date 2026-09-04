@@ -1,9 +1,11 @@
+from typing import Any
+
 import requests
 
 from config import settings
 
 
-def send_telegram_message(chat_id, message):
+def send_telegram_message(chat_id: str, message: str) -> Any:
     """Функция для отправки сообщений в телеграм"""
     url = f"{settings.TELEGRAM_URL}{settings.TELEGRAM_TOKEN}/sendMessage"
     params = {

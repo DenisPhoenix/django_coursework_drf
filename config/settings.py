@@ -14,7 +14,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DEBUG", default="False") == "True"
 
 # разрешенные хоста
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS: list = []
 
 # встроенные приложения Django
 DJANGO_APPS = [

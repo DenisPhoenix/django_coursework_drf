@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework import status
@@ -9,7 +11,7 @@ from users.models import User
 
 class HabitAPITestCase(APITestCase):
 
-    def setUp(self):
+    def setUp(self) -> None:
         self.user = User.objects.create(email="test@gmail.com")
         self.location = Location.objects.create(name="test_place")
         self.habit = Habit.objects.create(
@@ -26,7 +28,7 @@ class HabitAPITestCase(APITestCase):
         )
         self.client.force_authenticate(user=self.user)
 
-    def test_habit_create(self):
+    def test_habit_create(self) -> None:
         """Проверка создания привычки"""
         url = reverse("habit:habit-list")
         data = {
@@ -63,7 +65,7 @@ class HabitAPITestCase(APITestCase):
         # проверка количества созданных привычки
         self.assertEqual(Habit.objects.all().count(), 2)
 
-    def test_habit_retrieve(self):
+    def test_habit_retrieve(self) -> None:
         """Проверка детального просмотра привычки"""
         habit = self.habit
         url = reverse("habit:habit-detail", args=(habit.pk,))
@@ -90,7 +92,7 @@ class HabitAPITestCase(APITestCase):
         # проверка детального просмотра привычки
         self.assertEqual(result_data, expected_data)
 
-    def test_habit_update(self):
+    def test_habit_update(self) -> None:
         """Проверка обновления привычки"""
         habit = self.habit
         url = reverse("habit:habit-detail", args=(habit.pk,))
@@ -121,7 +123,7 @@ class HabitAPITestCase(APITestCase):
         # проверка обновления названия привычки
         self.assertEqual(result_data, expected_data)
 
-    def test_habit_delete(self):
+    def test_habit_delete(self) -> None:
         """Проверка удаления привычки"""
         url = reverse("habit:habit-detail", args=(self.habit.pk,))
 
@@ -132,7 +134,7 @@ class HabitAPITestCase(APITestCase):
         # проверка удаления привычки
         self.assertEqual(Habit.objects.all().count(), 0)
 
-    def test_habit_list(self):
+    def test_habit_list(self) -> None:
         """Проверка вывода списка привычек"""
         habit = self.habit
         url = reverse("habit:habit-list")
@@ -160,10 +162,44 @@ class HabitAPITestCase(APITestCase):
         # проверка списка привычек
         self.assertEqual(result_data, expected_data)
 
+    def test_published_habit_list(self) -> None:
+        """Проверка вывода списка публичных привычек"""
+        habit = Habit.objects.create(
+            owner=self.user,
+            location=self.location,
+            time="18:00:25",
+            action="Тестовое действие 1",
+            is_pleasant=True,
+            related_habit=None,
+            period="two_days",
+            reward="Тестовое вознаграждение 1",
+            completion_time=100,
+            is_published=True,
+        )
+        url = reverse("habit:publish-habit-list")
+
+        response = self.client.get(url)
+
+        result_data = response.json()
+        expected_data = [
+            {
+                "id": habit.pk,
+                "action": habit.action,
+                "is_pleasant": habit.is_pleasant,
+                "completion_time": habit.completion_time,
+                "is_published": habit.is_published,
+            },
+        ]
+
+        # проверка статус кода
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # проверка списка публичных привычек
+        self.assertEqual(result_data, expected_data)
+
 
 class LocationAPITestCase(APITestCase):
 
-    def setUp(self):
+    def setUp(self) -> None:
         self.user = User.objects.create(email="test@gmail.com")
         self.location = Location.objects.create(
             name="Тестовая локация 1",
@@ -173,11 +209,11 @@ class LocationAPITestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
 
     @staticmethod
-    def formater_iso(obj):
+    def formater_iso(obj: datetime) -> str:
         """Форматирует объект даты в строку ISO 8601"""
         return timezone.localtime(obj).isoformat()
 
-    def test_location_create(self):
+    def test_location_create(self) -> None:
         """Проверка создания локации"""
         url = reverse("habit:location-list")
         data = {
@@ -203,7 +239,7 @@ class LocationAPITestCase(APITestCase):
         # проверка количества созданных локации
         self.assertEqual(Location.objects.all().count(), 2)
 
-    def test_location_retrieve(self):
+    def test_location_retrieve(self) -> None:
         """Проверка детального просмотра локации"""
         location = self.location
         url = reverse("habit:location-detail", args=(location.pk,))
@@ -224,7 +260,7 @@ class LocationAPITestCase(APITestCase):
         # проверка детального просмотра локации
         self.assertEqual(result_data, expected_data)
 
-    def test_location_update(self):
+    def test_location_update(self) -> None:
         """Проверка обновления локации"""
         location = self.location
         url = reverse("habit:location-detail", args=(location.pk,))
@@ -249,7 +285,7 @@ class LocationAPITestCase(APITestCase):
         # проверка обновления названия локации
         self.assertEqual(result_data, expected_data)
 
-    def test_location_delete(self):
+    def test_location_delete(self) -> None:
         """Проверка удаления локации"""
         url = reverse("habit:location-detail", args=(self.location.pk,))
 
@@ -260,7 +296,7 @@ class LocationAPITestCase(APITestCase):
         # проверка удаления локации
         self.assertEqual(Location.objects.all().count(), 0)
 
-    def test_location_list(self):
+    def test_location_list(self) -> None:
         """Проверка вывода списка локаций"""
         location = self.location
         url = reverse("habit:location-list")
