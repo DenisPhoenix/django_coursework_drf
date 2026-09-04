@@ -11,7 +11,7 @@
    djangorestframework", "django-cors-headers", "python-dotenv", "pillow", "djangorestframework-simplejwt",
    "drf-spectacular", "django-celery-beat"
 
-2. Установить дополнительных зависимостей: "flake8", "isort", "black", "ipython", "django-stubs", "celery-types",
+2. Установить дополнительных зависимостей: "flake8", "isort", "black", "mypy", "ipython", "django-stubs", "celery-types",
    "djangorestframework-stubs", "coverage"
 
 3. Настройка зависимостей:
@@ -42,6 +42,10 @@ exclude = "venv"
 plugins = [
     "mypy_django_plugin.main"
 ]
+
+[[tool.mypy.overrides]]
+module = "django_celery_beat.*"
+ignore_missing_imports = true
 
 [tool.django-stubs]
 django_settings_module = "config.settings"

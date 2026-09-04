@@ -6,13 +6,15 @@ class User(AbstractUser):
     """Модель пользователя"""
 
     email = models.CharField(max_length=50, unique=True, verbose_name="Электронная почта")
-    username = models.CharField(max_length=50, unique=False, blank=True, null=True, verbose_name="Имя пользователя")
+    username: models.CharField = models.CharField(
+        max_length=50, unique=False, blank=True, null=True, verbose_name="Имя пользователя"
+    )
     tg_chat_id = models.CharField(max_length=15, blank=True, null=True, verbose_name="Chat ID")
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.email
 
     class Meta:

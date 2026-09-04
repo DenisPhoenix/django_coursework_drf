@@ -36,7 +36,7 @@ class OwnerHabitSerializer(serializers.ModelSerializer):
             "is_published",
         )
 
-    def validate(self, data):
+    def validate(self, data: dict) -> dict:
         """Общая валидация полей привычки"""
         request = self.context.get("request")
         if request and request.method == "POST":
@@ -50,7 +50,7 @@ class OwnerHabitSerializer(serializers.ModelSerializer):
 
         return data
 
-    def validate_completion_time(self, value):
+    def validate_completion_time(self, value: int) -> int:
         """Валидации выполнения привычки"""
         if value > 120:
             raise serializers.ValidationError("Время выполнения не может быть больше 2 минут")

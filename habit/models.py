@@ -10,7 +10,7 @@ class Location(models.Model):
     description = models.TextField(blank=True, null=True, verbose_name="Описание")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     class Meta:
@@ -48,7 +48,7 @@ class Habit(models.Model):
     )
     is_published = models.BooleanField(default=False, verbose_name="Признак публичности")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"я буду {self.action} в {self.time} в {self.location}"
 
     class Meta:
