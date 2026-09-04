@@ -18,6 +18,7 @@ class OwnerHabitSerializer(serializers.ModelSerializer):
     """Сериалайзер модели привычки"""
 
     is_pleasant = serializers.BooleanField(required=True)
+    completion_time = serializers.IntegerField()
 
     class Meta:
         model = Habit
@@ -48,6 +49,14 @@ class OwnerHabitSerializer(serializers.ModelSerializer):
             habit_is_pleasant(related_habit)
 
         return data
+
+    def validate_completion_time(self, value):
+        """Валидации выполнения привычки"""
+        if value > 120:
+            raise serializers.ValidationError("Время выполнения не может быть больше 2 минут")
+        elif value < 0:
+            raise serializers.ValidationError("Время выполнения не может быть меньше 0 секунд")
+        return value
 
 
 class PublishedHabitSerializer(serializers.ModelSerializer):

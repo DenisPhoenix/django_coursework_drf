@@ -32,12 +32,14 @@ class HabitViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         """Метод для получения сериалайзера в зависимости от метода"""
+        action = self.action
+
         if getattr(self, "swagger_fake_view", False):
             return OwnerHabitSerializer
 
-        if self.action == "list":
+        if action == "list":
             return PublishedHabitSerializer
-        elif self.action in ("update", "partial_update", "create", "retrieve"):
+        elif action in ("update", "create", "partial_update", "retrieve"):
             return OwnerHabitSerializer
 
     def perform_create(self, serializer):
