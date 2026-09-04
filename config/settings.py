@@ -32,10 +32,12 @@ THIRD_PARTY_APPS = [
     "rest_framework_simplejwt",
     "drf_spectacular",
     "django_celery_beat",
+    "corsheaders",
 ]
 # приложения проекта
 LOCAL_APPS = [
     "users.apps.UsersConfig",
+    "habit.apps.HabitConfig",
 ]
 
 # Все установленные приложения
@@ -50,6 +52,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 # главный urls.py
@@ -160,17 +163,36 @@ CELERY_TASK_TIME_LIMIT = int(os.getenv("CELERY_TASK_TIME_LIMIT_MINUTES", default
 # настройки для Celery beat
 CELERY_BEAT_SCHEDULE = {
     "user-block": {
-        "task": "my_app.tasks.my_func",
-        "schedule": timedelta(days=1),
+        "task": "habit.tasks.reminder_about_habit",
+        "schedule": timedelta(minutes=1),
     },
 }
 
-# настройки отправки сообщений на Gmail
-EMAIL_BACKEND = os.getenv("EMAIL_BACKEND")
-EMAIL_HOST = os.getenv("EMAIL_HOST")
-EMAIL_PORT = os.getenv("EMAIL_PORT")
-EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", default="False") == "True"
-EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", default="False") == "True"
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# настройки TG API
+TELEGRAM_URL = os.getenv("TELEGRAM_URL")
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+
+# настройка CORS
+if DEBUG:
+    # Адреса при разработке
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:3000",  # React
+        "http://localhost:5173",  # Vite / Vue
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:5173",
+    ]
+
+    CSRF_TRUSTED_ORIGINS = [
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:8000",  # Django
+    ]
+else:
+    # Адреса для продакшена
+    CORS_ALLOWED_ORIGINS = [
+        "https://example.com",
+        "https://example.com",
+    ]
+    CSRF_TRUSTED_ORIGINS = [
+        "https://example.com",
+    ]

@@ -3,7 +3,7 @@ name = "django-coursework-drf"
 version = "0.1.0"
 description = ""
 authors = [
-    {name = "name",email = "email@gmail.com"}
+    { name = "name", email = "email@gmail.com" }
 ]
 readme = "README.md"
 requires-python = "^3.14"
@@ -18,7 +18,9 @@ dependencies = [
     "pillow (>=12.3.0,<13.0.0)",
     "djangorestframework-simplejwt (>=5.5.1,<6.0.0)",
     "drf-spectacular (>=0.30.0,<0.31.0)",
-    "django-celery-beat (>=2.9.0,<3.0.0)"
+    "django-celery-beat (>=2.9.0,<3.0.0)",
+    "requests (>=2.34.2,<3.0.0)",
+    "django-cors-headers (>=4.9.0,<5.0.0)"
 ]
 
 
@@ -67,3 +69,15 @@ plugins = [
 django_settings_module = "config.settings"
 strict_model_abstract_attrs = false
 strict_settings_type = false
+
+[tool.coverage.run]
+source = ["."]
+omit = [
+    "*/migrations/*",
+    "*/settings.py",
+    "*/wsgi.py",
+    "*/asgi.py",
+    "manage.py",
+    "*/tests/*",
+]
+

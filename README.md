@@ -7,8 +7,8 @@
 
 ## Установка:
 
-1. Установить основных зависимостей: "django", "celery", "redis", "psycopg2", "eventlet", "
-   djangorestframework", "python-dotenv", "pillow", "djangorestframework-simplejwt",
+1. Установить основных зависимостей: "django", "celery", "redis", "psycopg2", "requests", "eventlet", "
+   djangorestframework", "django-cors-headers", "python-dotenv", "pillow", "djangorestframework-simplejwt",
    "drf-spectacular", "django-celery-beat"
 
 2. Установить дополнительных зависимостей: "flake8", "isort", "black", "ipython", "django-stubs", "celery-types",
@@ -47,14 +47,27 @@ plugins = [
 django_settings_module = "config.settings"
 strict_model_abstract_attrs = false
 strict_settings_type = false
+
+[tool.coverage.run]
+source = ["."]               # Директории для анализа (корень проекта)
+omit = [
+    "*/migrations/*",        # Игнорировать миграции Django
+    "*/settings.py",         # Игнорировать файл настроек
+    "*/wsgi.py",
+    "*/asgi.py",
+    "manage.py",
+    "*/tests/*",             # Сами тесты обычно исключают из отчета
+]
 ```
 
 ## Структура проекта
 
 + `config/`: Настройки проекта
++ `habit/`: Приложение Привычки
 + `users/`: Приложение Пользователей
 + `manage.py`: Запуска команд Django
 + `.env_example`: Пример переменных окружения
 + `.gitignore`: Игнорируемые файлы для Git
 + `pyproject.toml`: Файл c зависимостями проекта
 + `.flake8`: Настройки линтера flake8
++ `README.md`: Описание проекта
