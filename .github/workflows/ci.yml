@@ -68,7 +68,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.DOCKER_HUB_USERNAME }}/django_homework_drf
+          images: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.APP_NAME }}
           tags: |
             type=sha,format=long,prefix=sha-
       - name: Build and push Docker image
