@@ -15,6 +15,7 @@ class NotOwnerUserSerializer(serializers.ModelSerializer):
 
 class OwnerUserSerializer(serializers.ModelSerializer):
     """Сериалайзер для вывода данных об пользователе владельцу"""
+
     password = serializers.CharField(write_only=True)
 
     class Meta:
