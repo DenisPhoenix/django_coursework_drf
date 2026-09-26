@@ -95,34 +95,24 @@ jobs:
       - name: Prepare directories on Server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "mkdir -p ~/app/nginx"
-      - name: Copy docker-compose and nginx configs to server
+      - name: Create .env file
         run: |
+          echo "IMAGE_TAG=sha-${{ github.sha }}" > .env
+          echo "DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}" >> .env
+          echo "APP_NAME=${{ secrets.APP_NAME }}" >> .env
+      - name: Copy deployment files to server
+        run: |
+          scp -o StrictHostKeyChecking=no .env ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:~/app/.env
           scp -o StrictHostKeyChecking=no ./deploy/docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:~/app/docker-compose.yml
           scp -o StrictHostKeyChecking=no nginx/nginx.conf ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:~/app/nginx/nginx.conf
       - name: Deploy to Server via Docker Compose
-        env:
-          IMAGE_TAG: sha-${{ github.sha }}
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "bash -s" << EOF
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} \
+            "DOCKER_HUB_USERNAME='${{ secrets.DOCKER_HUB_USERNAME }}' \
+             DOCKER_HUB_ACCESS_TOKEN='${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}' \
+             bash -s" << 'EOF'
             cd ~/app
-            echo '${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}' | sudo docker login -u '${{ secrets.DOCKER_HUB_USERNAME }}' --password-stdin
-          
-            # Обновление или добавление IMAGE_TAG
-            if grep -q "^IMAGE_TAG=" .env; then
-              sed -i "s/^IMAGE_TAG=.*/IMAGE_TAG=$IMAGE_TAG/g" .env
-            else
-              echo "IMAGE_TAG=$IMAGE_TAG" >> .env
-            fi
-            # Добавление DOCKER_HUB_USERNAME, если его нет
-            if ! grep -q "^DOCKER_HUB_USERNAME=" .env; then
-              echo "DOCKER_HUB_USERNAME=$DOCKER_HUB_USERNAME" >> .env
-            fi
-            # Обновление или добавление APP_NAME
-            if grep -q "^APP_NAME=" .env; then
-              sed -i "s/^APP_NAME=.*/APP_NAME=$APP_NAME/g" .env
-            else
-              echo "APP_NAME=$APP_NAME" >> .env
-            fi
+            echo "$DOCKER_HUB_ACCESS_TOKEN" | sudo docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
             sudo docker compose pull
             sudo docker compose up -d --remove-orphans
             sudo docker image prune -f
