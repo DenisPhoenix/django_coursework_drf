@@ -106,13 +106,22 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "bash -s" << EOF
             cd ~/app
             echo '${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}' | sudo docker login -u '${{ secrets.DOCKER_HUB_USERNAME }}' --password-stdin
-            if grep -q "IMAGE_TAG=" .env; then
-              sed -i "s/IMAGE_TAG=.*/IMAGE_TAG=$IMAGE_TAG/g" .env
+          
+            # Обновление или добавление IMAGE_TAG
+            if grep -q "^IMAGE_TAG=" .env; then
+              sed -i "s/^IMAGE_TAG=.*/IMAGE_TAG=$IMAGE_TAG/g" .env
             else
               echo "IMAGE_TAG=$IMAGE_TAG" >> .env
             fi
-            if ! grep -q "DOCKER_HUB_USERNAME=" .env; then
-              echo "DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}" >> .env
+            # Добавление DOCKER_HUB_USERNAME, если его нет
+            if ! grep -q "^DOCKER_HUB_USERNAME=" .env; then
+              echo "DOCKER_HUB_USERNAME=$DOCKER_HUB_USERNAME" >> .env
+            fi
+            # Обновление или добавление APP_NAME
+            if grep -q "^APP_NAME=" .env; then
+              sed -i "s/^APP_NAME=.*/APP_NAME=$APP_NAME/g" .env
+            else
+              echo "APP_NAME=$APP_NAME" >> .env
             fi
             sudo docker compose pull
             sudo docker compose up -d --remove-orphans

@@ -14,7 +14,7 @@ services:
       retries: 5
 
   migrations:
-    image: ${DOCKER_HUB_USERNAME}/django_homework_drf:${IMAGE_TAG}
+    image: ${DOCKER_HUB_USERNAME}/${APP_NAME}:${IMAGE_TAG}
     env_file:
       - .env
     volumes:
@@ -27,7 +27,7 @@ services:
         condition: service_healthy
 
   static_collector:
-    image: ${DOCKER_HUB_USERNAME}/django_homework_drf:${IMAGE_TAG}
+    image: ${DOCKER_HUB_USERNAME}/${APP_NAME}:${IMAGE_TAG}
     command: sh -c "python manage.py collectstatic --no-input"
     env_file:
       - .env
@@ -47,7 +47,7 @@ services:
       retries: 3
 
   celery:
-    image: ${DOCKER_HUB_USERNAME}/django_homework_drf:${IMAGE_TAG}
+    image: ${DOCKER_HUB_USERNAME}/${APP_NAME}:${IMAGE_TAG}
     env_file:
       - .env
     environment:
@@ -68,7 +68,7 @@ services:
       timeout: 10s
       retries: 3
   backend:
-    image: ${DOCKER_HUB_USERNAME}/django_homework_drf:${IMAGE_TAG}
+    image: ${DOCKER_HUB_USERNAME}/${APP_NAME}:${IMAGE_TAG}
     command: sh -c "gunicorn config.wsgi:application --bind 0.0.0.0:8000"
     env_file:
       - .env
