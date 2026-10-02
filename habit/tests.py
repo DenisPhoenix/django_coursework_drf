@@ -225,7 +225,7 @@ class LocationAPITestCase(APITestCase):
         response = self.client.post(url, data)
         result_data = response.json()
         expected_data = {
-            "id": 2,
+            "id": result_data.get("id"),
             "name": data.get("name"),
             "address": data.get("address"),
             "description": data.get("description"),

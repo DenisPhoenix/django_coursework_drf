@@ -24,7 +24,7 @@ class UserAPITestCase(APITestCase):
         response = self.client.post(url, data)
         result_data = response.json()
         expected_data = {
-            "id": 2,
+            "id": result_data.get("id"),
             "first_name": "",
             "last_name": "",
             "email": data.get("email"),

@@ -16,6 +16,8 @@ class NotOwnerUserSerializer(serializers.ModelSerializer):
 class OwnerUserSerializer(serializers.ModelSerializer):
     """Сериалайзер для вывода данных об пользователе владельцу"""
 
+    password = serializers.CharField(write_only=True)
+
     class Meta:
         model = User
         fields = ("id", "first_name", "last_name", "email", "password", "tg_chat_id")
